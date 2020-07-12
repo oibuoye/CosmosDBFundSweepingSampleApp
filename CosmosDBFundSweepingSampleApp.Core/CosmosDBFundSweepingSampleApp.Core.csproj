@@ -4,4 +4,59 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="CoreServices\Contracts\ICoreBank3DClient.cs" />
+    <Compile Remove="CoreServices\Contracts\ICoreClient.cs" />
+    <Compile Remove="CoreServices\Contracts\ICoreParticipant.cs" />
+    <Compile Remove="CoreServices\Contracts\ICoreRule.cs" />
+    <Compile Remove="CoreServices\Contracts\ICoreRuleDetail.cs" />
+    <Compile Remove="CoreServices\Contracts\ICoreRuleParty.cs" />
+    <Compile Remove="CoreServices\CoreBank3DClient.cs" />
+    <Compile Remove="CoreServices\CoreClient.cs" />
+    <Compile Remove="CoreServices\CoreParticipant.cs" />
+    <Compile Remove="CoreServices\CoreRule.cs" />
+    <Compile Remove="CoreServices\CoreRuleDetail.cs" />
+    <Compile Remove="CoreServices\CoreRuleParty.cs" />
+    <Compile Remove="HelperModels\ClientDetailsModel.cs" />
+    <Compile Remove="HelperModels\ClientDetailsVM.cs" />
+    <Compile Remove="HelperModels\ComputeRulePartiesResponseModel.cs" />
+    <Compile Remove="HelperModels\ComputeRuleRequestModel.cs" />
+    <Compile Remove="HelperModels\ComputeRuleResponseModel.cs" />
+    <Compile Remove="HelperModels\CreateBank3DClientModel.cs" />
+    <Compile Remove="HelperModels\CreateClientModel.cs" />
+    <Compile Remove="HelperModels\CreateParticipantModel.cs" />
+    <Compile Remove="HelperModels\CreateRuleDetailsModel.cs" />
+    <Compile Remove="HelperModels\CreateRulePartiesModel.cs" />
+    <Compile Remove="HelperModels\CredentialModel.cs" />
+    <Compile Remove="HelperModels\ParticipantDetailsModel.cs" />
+    <Compile Remove="HelperModels\ParticipantDetailsVM.cs" />
+    <Compile Remove="HelperModels\RuleComputationModel.cs" />
+    <Compile Remove="HelperModels\RuleDetailsModel.cs" />
+    <Compile Remove="HelperModels\RuleDetailsVM.cs" />
+    <Compile Remove="HelperModels\RulePartiesDetailsModel.cs" />
+    <Compile Remove="HelperModels\RulePartiesEditResponse.cs" />
+    <Compile Remove="HelperModels\SettlementLogVM.cs" />
+    <Compile Remove="HelperModels\SettlementRequestModel.cs" />
+    <Compile Remove="HelperModels\SettlementResponseModel.cs" />
+    <Compile Remove="Services\Bank3DClientManager.cs" />
+    <Compile Remove="Services\ClientManager.cs" />
+    <Compile Remove="Services\Contracts\IBank3DClientManager.cs" />
+    <Compile Remove="Services\Contracts\IClientManager.cs" />
+    <Compile Remove="Services\Contracts\IParticipantManager.cs" />
+    <Compile Remove="Services\Contracts\IRuleDetailManager.cs" />
+    <Compile Remove="Services\Contracts\IRulePartyManager.cs" />
+    <Compile Remove="Services\Contracts\ISettlementLogManager.cs" />
+    <Compile Remove="Services\Contracts\ISettlementTransactionLogManager.cs" />
+    <Compile Remove="Services\ParticipantManager.cs" />
+    <Compile Remove="Services\RuleDetailManager.cs" />
+    <Compile Remove="Services\RulePartyManager.cs" />
+    <Compile Remove="Services\SettlementLogManager.cs" />
+    <Compile Remove="Services\SettlementTransactionLogManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.11.0" />
+  </ItemGroup>
+
 </Project>
