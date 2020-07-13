@@ -54,7 +54,7 @@ namespace CosmosDBFundSweepingSampleApp.Core.Services
             var sql = $"SELECT c.Id FROM c WHERE c.accountNumber='{accountNumber}' AND c.id != '{accountId}'";
             var iterator = container.GetItemQueryIterator<dynamic>(sql);
             var page = await iterator.ReadNextAsync();
-            _log.ChargeInfo($"Check if account number exist but not for a specified account: {page.RequestCharge} RUs");
+            _log.ChargeInfo($"Check if account number exist but not for a specified account id: {page.RequestCharge} RUs");
             return page.Count() > 0;
         }
 
@@ -84,7 +84,7 @@ namespace CosmosDBFundSweepingSampleApp.Core.Services
         {
             var clientObject = _cosmosSession.GetSession();
             var container = clientObject.Client.GetContainer(clientObject.DBName, typeof(AccountDetail).Name);
-            var sql = "SELECT * FROM c WHERE c.AccountNumber ="+ accountNumber;
+            var sql = $"SELECT * FROM c WHERE c.AccountNumber = '{accountNumber}'";
             var iterator = container.GetItemQueryIterator<AccountDetail>(sql);
             var page = await iterator.ReadNextAsync();
 
@@ -104,24 +104,23 @@ namespace CosmosDBFundSweepingSampleApp.Core.Services
         {
             var clientObject = _cosmosSession.GetSession();
             var container = clientObject.Client.GetContainer(clientObject.DBName, typeof(AccountDetail).Name);
-            var response = from acct in container.GetItemLinqQueryable<AccountDetail>(allowSynchronousQueryExecution: true)
-                    where acct.Id == accountId
-                    select new AccountDetailsModel
-                    {
-                        ID = acct.Id,
-                        AccountName = acct.AccountName,
-                        AccountNumber = acct.AccountNumber,
-                        BankName = acct.BankDetail.Name,
-                    };
+            var sql = $"SELECT c.id, c.accountName, c.accountNumber, c.bankDetail.name, c.bankDetail.id as BankId FROM c WHERE c.id = '{accountId}'";
+            var iterator = container.GetItemQueryIterator<AccountDetailsModel>(sql);
+            var page = await iterator.ReadNextAsync();
+            _log.ChargeInfo($"Get account details: {page.RequestCharge} RUs");
 
-            return await Task.FromResult(response.FirstOrDefault());
+            foreach (var item in page)
+            {
+                return item;
+            }
+            return new AccountDetailsModel { };
         }
 
         public async Task<AccountDetail> GetAccountById(string accountId)
         {
             var clientObject = _cosmosSession.GetSession();
             var container = clientObject.Client.GetContainer(clientObject.DBName, typeof(AccountDetail).Name);
-            var sql = "SELECT * FROM c WHERE c.Id =" + accountId;
+            var sql = $"SELECT * FROM c WHERE c.id ='{accountId}'";
             var iterator = container.GetItemQueryIterator<AccountDetail>(sql);
             var page = await iterator.ReadNextAsync();
 
@@ -201,11 +200,18 @@ namespace CosmosDBFundSweepingSampleApp.Core.Services
 
         public async Task<bool> UpdateAccount(AccountDetail model)
         {
-            var clientObject = _cosmosSession.GetSession();
-            var container = clientObject.Client.GetContainer(clientObject.DBName, typeof(AccountDetail).Name);
-            await container.ReplaceItemAsync<dynamic>(model, model.Id);
+            try
+            {
+                var clientObject = _cosmosSession.GetSession();
+                var container = clientObject.Client.GetContainer(clientObject.DBName, typeof(AccountDetail).Name);
+                var response = await container.ReplaceItemAsync<dynamic>(model, model.Id, partitionKey: new PartitionKey(model.AccountNumber));
 
-            return true;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 

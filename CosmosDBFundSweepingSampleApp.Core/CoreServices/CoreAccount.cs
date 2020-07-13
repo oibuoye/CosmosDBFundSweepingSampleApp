@@ -17,7 +17,7 @@ namespace CosmosDBFundSweepingSampleApp.Core.CoreServices
     public class CoreAccount : ICoreAccount
     {
         private readonly IAccountManager _accountManager;
-        private static ILogger _log; // = new Log4netLogger();
+        private static ILogger _log;
 
         public CoreAccount(IAccountManager accountManager, ILogger log)
         {
@@ -81,7 +81,7 @@ namespace CosmosDBFundSweepingSampleApp.Core.CoreServices
             vM.DataSize = datasize;
             vM.PageSize = pages;
 
-            return vM;
+            return await Task.FromResult(vM);
         }
 
         public async Task<AccountDetailsModel> GetAccountDetail(string accountId)
@@ -93,8 +93,8 @@ namespace CosmosDBFundSweepingSampleApp.Core.CoreServices
         {
             try
             {
-                //Confirn the existence of the account number
-                var checkAccountNumber = await _accountManager.Exists(model.AccountNumber, model.ID);
+                //Confirm the existence of the account number
+                var checkAccountNumber = await _accountManager.ExistsAccount(model.AccountNumber, model.ID);
                 if (checkAccountNumber)
                 {
                     throw new AccountDetailsAlreadyExistException($"Account number { model.AccountNumber } already exist");
@@ -105,7 +105,7 @@ namespace CosmosDBFundSweepingSampleApp.Core.CoreServices
                 accountDetails.Id = model.ID;
                 accountDetails.AccountName = model.AccountName;
                 accountDetails.AccountNumber = model.AccountNumber;
-                accountDetails.BankDetail = new BankDetail { Name = bankDetail.Name, Code = bankDetail.Code };
+                accountDetails.BankDetail = new BankDetail { Name = bankDetail.Name, Code = bankDetail.Code, Id = model.BankId };
                 accountDetails.UpdatedAtUtc = DateTime.Now;
                 await _accountManager.UpdateAccount(accountDetails);
                 _log.Warn($"New account details::: {JsonConvert.SerializeObject(accountDetails)}");

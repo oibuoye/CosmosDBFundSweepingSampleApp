@@ -16,13 +16,14 @@ namespace CosmosDBFundSweepingSampleApp.Web.Controllers.Handlers
     public class AccountRequestHandler : IAccountRequestHandler
     {
         private readonly ICoreAccount _coreAccount;
-        private readonly ILogger log;
+        private readonly ILogger _log;
         private readonly IBankManager _bankManager;
 
-        public AccountRequestHandler(ICoreAccount coreAccount, IBankManager bankManager)
+        public AccountRequestHandler(ICoreAccount coreAccount, IBankManager bankManager, ILogger log)
         {
-            _coreAccount = coreAccount ?? throw new ArgumentNullException(nameof(coreAccount));
+            _coreAccount = coreAccount;// ?? throw new ArgumentNullException(nameof(coreAccount));
             _bankManager = bankManager;
+            _log = log;
         }
 
         public async Task<CreateAccountModel> CreateAccount(CreateAccountModel model)
@@ -31,7 +32,7 @@ namespace CosmosDBFundSweepingSampleApp.Web.Controllers.Handlers
             {
                 if (model == null)
                 {
-                    log.Warn("passed account model is null");
+                    _log.Warn("passed account model is null");
                     throw new ModelIsNullException("request model is null");
                 }
 
@@ -41,11 +42,11 @@ namespace CosmosDBFundSweepingSampleApp.Web.Controllers.Handlers
                     Id = Guid.NewGuid().ToString(),
                     AccountName = model.AccountName,
                     AccountNumber = model.AccountNumber,
-                    BankDetail = new BankDetail { Code = response.Code, Name = response.Name },
+                    BankDetail = new BankDetail { Code = response.Code, Name = response.Name, Id = model.BankId },
                     CreatedAtUtc = DateTime.Now,
                     UpdatedAtUtc = DateTime.Now
                 };
-                log.Info("about to create account");
+                _log.Info("about to create account");
                 await _coreAccount.CreateAccount(accountDetails);
                 return model;
 

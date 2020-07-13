@@ -7,6 +7,9 @@ namespace CosmosDBFundSweepingSampleApp.Core.Models
 {
     public class BankDetail
     {
+        [JsonProperty(PropertyName = "id")]
+        public virtual string Id { get; set; }
+
         [JsonProperty(PropertyName = "name")]
         public virtual string Name { get; set; }
 
